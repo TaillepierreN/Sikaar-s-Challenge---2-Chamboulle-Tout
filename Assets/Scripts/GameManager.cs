@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,17 +10,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] List<Transform> stackSpawns;
     [SerializeField] GameObject stackPrefab;
     [SerializeField] GameObject ballPrefab;
+    public List<GameObject> spawnedItems;
+    [SerializeField] TMP_Text textScore;
+    int score;
     // Start is called before the first frame update
     void Start()
     {
         PrepSpawnStack();
         PrepSpawnBall();
+        score = 0;
+
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+    private void Update() {
+        textScore.text = score.ToString();
     }
     public void PrepSpawnStack()
     {
@@ -36,11 +40,34 @@ public class GameManager : MonoBehaviour
     }
     void SpawnStack(Transform spawnpoint)
     {
-        Instantiate(stackPrefab, spawnpoint.position, Quaternion.identity);
+        var spawned = Instantiate(stackPrefab, spawnpoint.position, Quaternion.identity);
+        spawnedItems.Add(spawned);
     }
     void SpawnBall(Transform spawnpoint)
     {
-        Instantiate(ballPrefab, spawnpoint.position, Quaternion.identity);
+        var spawned = Instantiate(ballPrefab, spawnpoint.position, Quaternion.identity);
+        spawnedItems.Add(spawned);
+
+    }
+    public void Reset()
+    {
+
+        foreach (GameObject item in spawnedItems.ToList())
+        {
+            Destroy(item);
+            spawnedItems.Remove(item);
+        }
+        PrepSpawnStack();
+        PrepSpawnBall();
+        score = 0;
+    }
+    public void addPoint()
+    {
+        score += 5;
+    }
+    public void addMorePoint()
+    {
+        score += 5;
     }
 
 }
